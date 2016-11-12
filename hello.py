@@ -113,10 +113,10 @@ def insert(table, fields=(), values=()):
 
 @app.route('/CreatePool', methods = ['POST'])
 def CreatePool():
+    json = request.get_json()
     db = get_db()
     init_db()
-    print request.form['username']
-    insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), ("in n out", "1478939164", "5", "room 383", False))
+    insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), (json["restaurant"], json["return_time"], json["num_orders"], json["pickup_location"], False))
     return str(query_db("Select * from Pools"))
 
 @app.route('/PoolArrived', methods = ['POST'])
