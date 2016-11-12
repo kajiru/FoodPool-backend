@@ -61,6 +61,7 @@ def insert(table, fields=(), values=()):
 @app.route('/CreatePool', methods = ['POST'])
 def CreatePool():
     db = get_db()
+    init_db()
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), ("in n out", "1478939164", "5", "room 383", False))
     return str(query_db("Select * from Pools"))
 
