@@ -46,6 +46,7 @@ def query_db(query, args=(), one=False):
 @app.route('/')
 def hello_world():
     return 'Hello World! I am running on port ' + str(port)
+"""
 
 @app.route('/placeOrder')
 def placeOrder():
@@ -141,6 +142,7 @@ def PoolArrived():
         except:
             pass
     return "Done"
+"""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
