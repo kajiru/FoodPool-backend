@@ -45,11 +45,7 @@ def query_db(query, args=(), one=False):
 
 @app.route('/')
 def hello_world():
-    return 'Hello World! I am running on port ' + str(port)
-
-@app.route('/placeOrder')
-def placeOrder():
-    return app.send_static_file('/placeOrder/index.html')
+    return app.send_static_file('index.html')
 
 @app.route('/processOrder', methods = ['POST'])
 def processOrder():
