@@ -73,12 +73,15 @@ def processOrder():
 
         success = processTransaction(nonce,cost)
         if success:
+
+            db = get_db()
+#            init_db()
+            insert("Orders", ("name", "food_order", "total", "phone"), (userDetails["name"], userDetails["order"], userDetails["cost"], userDetails["phoneNumber"]))
             return app.send_static_file('thankYou.html')
         else:
             return app.send_static_file('index.html')
-
-        
 def processTransaction(nonce,cost):
+        
     api_instance = TransactionApi()
     # Every payment you process with the SDK must have a unique idempotency key.
     # If you're unsure whether a particular payment succeeded, you can reattempt
@@ -125,7 +128,7 @@ def CreatePool():
     db = get_db()
     init_db()
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), (json["restaurant"], json["return_time"], json["num_orders"], json["pickup_location"], False))
-    return str(query_db("Select * from Pools"))
+    return "https://foodpool.mybluemix.net/"
 
 @app.route('/PoolArrived', methods = ['POST'])
 def PoolArrived():
