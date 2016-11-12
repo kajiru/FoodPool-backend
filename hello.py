@@ -7,6 +7,18 @@ import cf_deployment_tracker
 import sqlite3
 import os
 
+import uuid,os
+from flask import Flask, jsonify, request
+
+#Square Modules
+import squareconnect
+from squareconnect.rest import ApiException
+from squareconnect.apis.transaction_api import TransactionApi
+
+access_token = 'sandbox-sq0atb-vwQUCVDYaJrgubwxf5VnkQ'
+
+location_id = 'CBASEMe2x6MwoifEPrKa8Toz5gk'
+
 # Emit Bluemix deployment event
 cf_deployment_tracker.track()
 
