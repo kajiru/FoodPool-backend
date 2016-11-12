@@ -4,6 +4,7 @@ rapid = RapidConnect('foodpool', '521832dd-f936-404c-a121-9ee6781cabea');
 from flask import Flask
 from flask import g
 import cf_deployment_tracker
+import sqlite3
 import os
 
 # Emit Bluemix deployment event
@@ -30,7 +31,6 @@ def close_connection(exception):
         db.close()
 
 def init_db():
-    import sqlite3
     with app.app_context():
         db = get_db()
         with app.open_resource('schema.sql', mode='r') as f:
