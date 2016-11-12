@@ -62,7 +62,7 @@ def insert(table, fields=(), values=()):
 def CreatePool():
     db = get_db()
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), ("in n out", "1478939164", "5", "room 383", False))
-    return "Pool Created"
+    return str(query_db("Select * from Pools"))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
