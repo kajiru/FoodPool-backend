@@ -49,7 +49,7 @@ def hello_world():
 
 @app.route('/placeOrder')
 def placeOrder():
-    return return app.send_static_file('/placeOrder/index.html')
+    return app.send_static_file('/placeOrder/index.html')
 
 @app.route('/processOrder', methods = ['POST'])
 def processOrder():
