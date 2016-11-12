@@ -128,7 +128,7 @@ def CreatePool():
     db = get_db()
     init_db()
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), (json["restaurant"], json["return_time"], json["num_orders"], json["pickup_location"], False))
-    return "https://foodpool.mybluemix.net/"
+    return jsonify(**{"order_link": "https://foodpool.mybluemix.net/"})
 
 @app.route('/PoolArrived', methods = ['POST'])
 def PoolArrived():
