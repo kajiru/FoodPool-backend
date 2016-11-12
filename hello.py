@@ -1,3 +1,6 @@
+from rapidconnect import RapidConnect
+from flask import request
+rapid = RapidConnect('foodpool', '521832dd-f936-404c-a121-9ee6781cabea');
 import sqlite3
 from flask import Flask
 from flask import g
@@ -62,8 +65,32 @@ def insert(table, fields=(), values=()):
 def CreatePool():
     db = get_db()
     init_db()
+    print request.form['username']
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), ("in n out", "1478939164", "5", "room 383", False))
     return str(query_db("Select * from Pools"))
+
+@app.route('/PoolArrived', methods = ['POST'])
+def PoolArrived():
+    orders = query_db("select phone from Orders")
+    print orders
+    for order in orders:
+        to = order[0]
+        try:
+            result = rapid.call('Twilio', 'sendSms', { 
+                'accountSid': 'ACaf68211f718a1a979fe9666f2ba4e016',
+                'accountToken': 'fbb7e37935978d397ba905b2ded0e08a',
+                'from': '(415) 802-0448',
+                'to': to,
+                'applicationSid': '',
+                'statusCallback': '',
+                'messagingServiceSid': 'MGc057bf228a454e212e5b92af273d6adb',
+                'body': 'Your order is ready!'
+                #'maxPrice': '',
+                #'provideFeedback': ''
+            });
+        except:
+            pass
+    return "Done"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
