@@ -44,6 +44,10 @@ def query_db(query, args=(), one=False):
 def hello_world():
     return 'Hello World! I am running on port ' + str(port)
 
+@app.route('/placeOrder')
+def placeOrder():
+    return return app.send_static_file('/placeOrder/index.html')
+
 def insert(table, fields=(), values=()):
     db = getattr(g, '_database', None)
     cur = db.cursor()
