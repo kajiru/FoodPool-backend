@@ -1,7 +1,6 @@
 from rapidconnect import RapidConnect
 from flask import request
 rapid = RapidConnect('foodpool', '521832dd-f936-404c-a121-9ee6781cabea');
-import sqlite3
 from flask import Flask
 from flask import g
 import cf_deployment_tracker
@@ -31,6 +30,7 @@ def close_connection(exception):
         db.close()
 
 def init_db():
+    import sqlite3
     with app.app_context():
         db = get_db()
         with app.open_resource('schema.sql', mode='r') as f:
@@ -46,7 +46,6 @@ def query_db(query, args=(), one=False):
 @app.route('/')
 def hello_world():
     return 'Hello World! I am running on port ' + str(port)
-"""
 
 @app.route('/placeOrder')
 def placeOrder():
@@ -142,7 +141,6 @@ def PoolArrived():
         except:
             pass
     return "Done"
-"""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
