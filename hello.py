@@ -47,6 +47,56 @@ def query_db(query, args=(), one=False):
 def hello_world():
     return 'Hello World! I am running on port ' + str(port)
 
+@app.route('/placeOrder')
+def placeOrder():
+    return return app.send_static_file('/placeOrder/index.html')
+
+@app.route('/processOrder', methods = ['POST'])
+def processOrder():
+    if request.method == 'POST':
+        nonce = request.form['nonce']
+        name  = request.form['username']
+        order  = request.form['order']
+        cost  = int(request.form['cost'])
+        phoneNumber  = request.form['phoneNumber']
+        userDetails = {'name':name, 'order':order, 'cost':cost, 'phoneNumber':phoneNumber}
+
+        print(userDetails)
+
+        success = processTransaction(nonce,cost)
+        if success:
+            return app.send_static_file('thankYou.html')
+        else:
+            return app.send_static_file('index.html')
+
+        
+def processTransaction(nonce,cost):
+    api_instance = TransactionApi()
+    # Every payment you process with the SDK must have a unique idempotency key.
+    # If you're unsure whether a particular payment succeeded, you can reattempt
+    # it with the same idempotency key without worrying about double charging
+    # the buyer.
+    idempotency_key = str(uuid.uuid1())
+
+    # Monetary amounts are specified in the smallest unit of the applicable currency.
+    # This amount is in cents. It's also hard-coded for $1.00, which isn't very useful.
+    amount = {'amount':cost, 'currency': 'USD'}
+    body = {'idempotency_key': idempotency_key, 'card_nonce': nonce, 'amount_money': amount}
+
+    # The SDK throws an exception if a Connect endpoint responds with anything besides
+    # a 200-level HTTP code. This block catches any exceptions that occur from the request.
+    try:
+      # Charge
+      api_response = api_instance.charge(access_token, location_id, body)
+      res = api_response.transaction
+      #Push to Db  #TODO
+      return True
+    except ApiException as e:
+      res = "Exception when calling TransactionApi->charge: {}".format(e)
+      print(res); #For Debuggig
+      return False
+
+
 def insert(table, fields=(), values=()):
     db = getattr(g, '_database', None)
     cur = db.cursor()
