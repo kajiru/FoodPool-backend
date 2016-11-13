@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>Payment Form</title>
+  <link rel="stylesheet" href="static/bootstrap.css" />
   <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
   <script>
     var sqPaymentForm = new SqPaymentForm({
@@ -107,53 +108,95 @@
       outline-offset: 0px;
       outline-style: auto;
     }
+
+    .text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
   </style>
 </head>
 <body>
 
-  <h1>Place Your Order</h1>
+  <h1 class="text-center">Place Your Order</h1>
 
-  <form id="form" novalidate action="/processOrder" method="post">
+  <form class="form-horizontal" id="form" novalidate action="/processOrder" method="post">
 
-    <label>Name </label><br>
-    <input type="text" name="username">
-    <br>
-    <label>Select Restraunt</label>
-    <br>
-    <select id ="restaurantName" onchange="updateMenus(this)">
-      <option value="chipotle">Chipotle</option>
-      <option value="in-n-out">In-N-Out</option>
-      <option value="panda-express">Panda Express</option>
-      <option value="great-chinese">Great Chine</option>
-      <option value="thai-Basil-Cuisine">Thai Basil Cuisine</option>
-    </select>
-    <br>
-    <div id = "meals">
-      <label>Select Meal</label>
-      <br>
-      <select id="mealsList" name="mealChoise">
-        <option value="7.15" >Chiecken Burrito Bowl - $7.15</option>
-        <option value="8.25">Steak Burrito Bowl - $8.25</option>
-        <option value="7.15"> Veggie Burrito - $7.15</option>
-      </select>
+    <div class="form-group">
+      <label for="name" class="col-sm-2 control-label">Name</label>
+     <div class="col-sm-8">
+          <input type="text" class="form-control" id="name" name="username" placeholder="Name">
+     </div>
+  </div>
+
+    <div class="form-group">
+      <label for="meals" class="col-sm-2 control-label">Meal</label>
+      <div class="col-sm-8">
+        <select id="mealsList" name="meal">
+          <option value="Chicken Burrito Bowl" > Chiecken Burrito Bowl - $7.15</option>
+          <option value="Steak Burrito Bowl"> Steak Burrito Bowl - $8.25</option>
+          <option value="Veggie Burrito "> Veggie Burrito - $7.15</option>
+        </select>
+      </div>
     </div>
-    <label>Total Cost</label><br>
-    <input type="text" name="cost" value="$9.15">
-    <br>
-    <label>Phone number </label><br>
-    <input type="text" name="phoneNumber">
-    <br>
 
-    <label>Credit Card</label>
-    <div id="sq-card-number"></div>
-    <label>CVV</label>
-    <div id="sq-cvv"></div>
-    <label>Expiration Date</label>
-    <div id="sq-expiration-date"></div>
-    <label>Postal Code</label>
-    <div id="sq-postal-code"></div>
+    <div class="form-group">
+      <label for="cost" class="col-sm-2 control-label">Total Cost</label>
+     <div class="col-sm-8">
+          <input type="text" class="form-control" id="cost" name="cost" placeholder="$0.00" value="$9.15">
+     </div>
+  </div>
+
+    <div class="form-group">
+      <label for="phoneNumber" class="col-sm-2 control-label">Phone Number</label>
+     <div class="col-sm-8">
+          <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="650 000 0000">
+     </div>
+   </div>
+
+   <div class="form-group">
+     <label for="phoneNumber" class="col-sm-2 control-label"></label>
+     <div class="col-sm-8"> <hr></div>
+  </div>
+
+
+    <div class="form-group">
+     <label for="sq-card-number" class="col-sm-2 control-label"> Credit Card</label>
+     <div id="sq-card-number" class="col-sm-8"> </div>
+    </div>
+
+    <div class="form-group">
+      <label for="sq-cvv" class="col-sm-2 control-label">CVV</label>
+     <div id="sq-cvv" class="col-sm-8">
+     </div>
+    </div>
+
+    <div class="form-group">
+      <label for="sq-expiration-date" class="col-sm-2 control-label">Expiration Date</label>
+     <div id="sq-expiration-date" class="col-sm-8">
+     </div>
+    </div>
+
+    <div class="form-group">
+      <label for="sq-postal-code" class="col-sm-2 control-label">Postal Code</label>
+     <div id="sq-postal-code" class="col-sm-8">
+     </div>
+    </div>
     <input type="hidden" id="card-nonce" name="nonce">
-    <input type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit">
+
+    <div class="form-group">
+      <div class="col-sm-offset-5 ">
+        <input type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit">
+        <!-- <button type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit" class="btn btn-default">Submit</button> -->
+    </div>
+  </div>
   </form>
 
   <div id="errors">
@@ -161,72 +204,16 @@
 
   <script>
 
-  function updateMenus(el){
-    var restaurants = [
-      [{meal:'Chicken Burrito Bowl - Chicken',price: 7.15},{meal:'Steak Burrito Bowl',price: 8.25},{meal:'Veggie Burrito ',price: 7.15}],
-      [{meal:'Humburger w/Onion',price:5.25},{meal:'Cheeseburger w/Onion',price:5.55},{meal:'Double-Double w/Onion',price:6.60}]
-    ];
-
-    var mealsDiv = document.getElementById('meals');
-    var value = el.options[el.selectedIndex].value;
-    if(value === 'chipotle'){
-      var chipotleMenu = restaurants[0];
-
-      document.querySelector('input[name="cost"]').value = '$' + (parseFloat(chipotleMenu[0]['price']) + 2.0);
-      var chipotleMenuArr = [];
-      for(var i = 0; i < chipotleMenu.length; i++){
-        chipotleMenuArr.push(tag('option', {'value':chipotleMenu[i]['price']},chipotleMenu[i]['meal'] + ' - $' + chipotleMenu[i]['price']));
-      }
-      meals.innerHTML = '';
-      meals.appendChild(tag('label',{},'Select Meal'));
-      meals.appendChild(tag('br',{},''));
-      mealsDiv.appendChild(tag('select',{'id':'mealsList'},chipotleMenuArr));
-
-      //Reattaches the event listener
-      var mealsList = document.getElementById('mealsList');
-      mealsList.addEventListener('change', event =>{
-        event.preventDefault();
-        mealsList = document.querySelector('#mealsList');
-        var totalCostDiv = document.querySelector('input[name="cost"]');
-        console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
-        totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
-      });
-
-    }else{
-      var othersMenu = restaurants[1];
-      document.querySelector('input[name="cost"]').value = '$' + (parseFloat(othersMenu[0]['price']) +2.0);
-      var othersMenuArr = [];
-      for(var i = 0; i < othersMenu.length; i++){
-        othersMenuArr.push(tag('option', {'value':othersMenu[i]['price']},othersMenu[i]['meal'] + ' - $' + othersMenu[i]['price']));
-      }
-      meals.innerHTML = '';
-      meals.appendChild(tag('label',{},'Select Meal'));
-      meals.appendChild(tag('br',{},''));
-      mealsDiv.appendChild(tag('select',{'id':'mealsList'},othersMenuArr));
-
-      //Reattaches the event listener
-      var mealsList = document.getElementById('mealsList');
-      mealsList.addEventListener('change', event =>{
-        event.preventDefault();
-        mealsList = document.querySelector('#mealsList');
-        var totalCostDiv = document.querySelector('input[name="cost"]');
-        console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
-        totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
-      });
-    }
-
-  }
-
     var mealsList = document.getElementById('mealsList');
-    mealsList.addEventListener('change', event =>{
-      event.preventDefault();
-      mealsList = document.querySelector('#mealsList');
-      var totalCostDiv = document.querySelector('input[name="cost"]');
-      console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
-      totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
-
+      mealsList.addEventListener('change', event =>{
+        event.preventDefault();
+        mealsList = document.querySelector('#mealsList');
+        var totalCostDiv = document.querySelector('input[name="cost"]');
+        var meal = mealsList.options[mealsList.selectedIndex].text
+        console.log(meal)
+        var priceStr = meal.substring(meal.length - 4);
+        totalCostDiv.value = '$' + (parseFloat(priceStr) + 2);
     });
-
 
   function tag(name, attrs, contents) {
     const element = document.createElement(name)
@@ -251,5 +238,7 @@
     return element
   }
   </script>
+    <script type="text/javascript" src="static/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="static/bootstrap.min.js"></script>
 </body>
 </html>

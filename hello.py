@@ -64,7 +64,7 @@ def processOrder():
     if request.method == 'POST':
         nonce = request.form['nonce']
         name  = request.form['username']
-        order  = request.form['mealChoise']
+        order  = request.form['meal']
         cost  = int(float(request.form['cost'][1:]) * 100)
         phoneNumber  = request.form['phoneNumber']
         userDetails = {'name':name, 'order':order, 'cost':cost, 'phoneNumber':phoneNumber}
