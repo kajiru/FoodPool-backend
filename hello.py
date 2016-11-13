@@ -57,6 +57,7 @@ def query_db(query, args=(), one=False):
 
 @app.route('/')
 def hello_world():
+    create_index()
     return app.send_static_file('index.html')
 
 @app.route('/processOrder', methods = ['POST'])
@@ -142,10 +143,12 @@ def GetConfirmedOrders():
 
 @app.route('/PoolArrived', methods = ['POST'])
 def PoolArrived():
-    orders = query_db("select phone from Orders")
+    orders = query_db("select phone, name from Orders")
+    location = query_db("select pickup_location from Pools")[0][0]
     print orders
     for order in orders:
         to = order[0]
+        name = order[1]
         try:
             result = rapid.call('Twilio', 'sendSms', {
                 'accountSid': 'ACaf68211f718a1a979fe9666f2ba4e016',
@@ -155,13 +158,276 @@ def PoolArrived():
                 'applicationSid': '',
                 'statusCallback': '',
                 'messagingServiceSid': 'MGc057bf228a454e212e5b92af273d6adb',
-                'body': 'Your order is ready!'
+                'body': 'Hi ' + name + ', your order has been delivered: you can pick it up at ' + location
                 #'maxPrice': '',
                 #'provideFeedback': ''
             });
         except:
             pass
     return "Done"
+
+def create_index():
+    restaurant = query_db("select restaurant from Pools")[0][0]
+
+    meals = {"In-N-Out": """
+      <option value="Hamburger with Onion" > Hamburger with Onion - $5.25</option>
+      <option value="Cheeseburger with Onion"> Cheeseburger with Onion - $5.55</option>
+      <option value="Double-Double with Onion"> Double-Double with Onion - $6.60</option>
+    """,
+    "Chipotle": """
+      <option value="Chicken Burrito Bowl" > Chicken Burrito Bowl - $7.15</option>
+      <option value="Steak Burrito Bowl"> Steak Burrito Bowl - $8.25</option>
+      <option value="Veggie Burrito "> Veggie Burrito - $7.15</option>
+    """}
+    meal = ""
+    try:
+        meal = meals[restaurant]
+    except:
+        meal = meals["Chipotle"]
+
+    index = """<html>
+    <head>
+      <title>Payment Form</title>
+      <link rel="stylesheet" href="static/bootstrap.css" />
+      <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
+      <script>
+        var sqPaymentForm = new SqPaymentForm({
+
+          // Replace this value with your application\'s ID (available from the merchant dashboard).
+          // If you\'re just testing things out, replace this with your _Sandbox_ application ID,
+          // which is also available there.
+          applicationId: \'sandbox-sq0idp-R21hfTdwB0CPoGpL5JdsyQ\',
+          inputClass: \'sq-input\',
+          cardNumber: {
+            elementId: \'sq-card-number\',
+            placeholder: "0000 0000 0000 0000"
+          },
+          cvv: {
+            elementId: \'sq-cvv\',
+            placeholder: \'CVV\'
+          },
+          expirationDate: {
+            elementId: \'sq-expiration-date\',
+            placeholder: \'MM/YY\'
+          },
+          postalCode: {
+            elementId: \'sq-postal-code\',
+            placeholder: \'Postal Code\'
+          },
+          inputStyles: [
+
+            // Because this object provides no value for mediaMaxWidth or mediaMinWidth,
+            // these styles apply for screens of all sizes, unless overridden by another
+            // input style below.
+            {
+              fontSize: \'14px\',
+              padding: \'3px\'
+            },
+
+            // These styles are applied to inputs ONLY when the screen width is 400px
+            // or smaller. Note that because it doesn\'t specify a value for padding,
+            // the padding value in the previous object is preserved.
+            {
+              mediaMaxWidth: \'400px\',
+              fontSize: \'18px\',
+            }
+          ],
+          callbacks: {
+            cardNonceResponseReceived: function(errors, nonce, cardData) {
+              if (errors) {
+                var errorDiv = document.getElementById(\'errors\');
+                errorDiv.innerHTML = "";
+                errors.forEach(function(error) {
+                  var p = document.createElement(\'p\');
+                  p.innerHTML = error.message;
+                  errorDiv.appendChild(p);
+                });
+              } else {
+                // This alert is for debugging purposes only.
+                //alert(\'Nonce received! \' + nonce + \' \' + JSON.stringify(cardData));
+
+                // Assign the value of the nonce to a hidden form element
+                var nonceField = document.getElementById(\'card-nonce\');
+                nonceField.value = nonce;
+                // Submit the form
+                document.getElementById(\'form\').submit();
+              }
+            },
+            unsupportedBrowserDetected: function() {
+              // Alert the buyer that their browser is not supported
+            }
+          }
+        });
+        function submitButtonClick(event) {
+          event.preventDefault();
+          //validateUserInfo();
+          sqPaymentForm.requestCardNonce();
+        }
+
+
+        //alert(restaurantMenu.options[restaurantMenu.selectedIndex ].value);
+
+
+        function validateUserInfo(){
+          //TODO: Actually check various constrains
+          var name = document.querySelector(\'input[name="name"]\').value;
+          var order = document.querySelector(\'input[name="order"]\').value;
+          var cost = document.querySelector(\'input[name="cost"]\').value;
+          var phone = document.querySelector(\'input[name="phoneNumber"]\').value;
+        }
+
+      </script>
+      <style type="text/css">
+        .sq-input {
+          border: 1px solid #CCCCCC;
+          margin-bottom: 10px;
+          padding: 1px;
+        }
+        .sq-input--focus {
+          outline-width: 5px;
+          outline-color: #70ACE9;
+          outline-offset: -1px;
+          outline-style: auto;
+        }
+        .sq-input--error {
+          outline-width: 5px;
+          outline-color: #FF9393;
+          outline-offset: 0px;
+          outline-style: auto;
+        }
+
+        .text-left {
+      text-align: left;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+      </style>
+    </head>
+    <body>
+
+      <h1 class="text-center">Place Your Order</h1>
+
+      <form class="form-horizontal" id="form" novalidate action="/processOrder" method="post">
+
+        <div class="form-group">
+          <label for="name" class="col-sm-2 control-label">Name</label>
+         <div class="col-sm-8">
+              <input type="text" class="form-control" id="name" name="username" placeholder="Name">
+         </div>
+      </div>
+
+        <div class="form-group">
+          <label for="meals" class="col-sm-2 control-label">Meal</label>
+          <div class="col-sm-8">
+            <select id="mealsList" name="meal">""" + meal + """
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cost" class="col-sm-2 control-label">Total Cost</label>
+         <div class="col-sm-8">
+              <input type="text" class="form-control" id="cost" name="cost" placeholder="$0.00" value="$9.15">
+         </div>
+      </div>
+
+        <div class="form-group">
+          <label for="phoneNumber" class="col-sm-2 control-label">Phone Number</label>
+         <div class="col-sm-8">
+              <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="650 000 0000">
+         </div>
+       </div>
+
+       <div class="form-group">
+         <label for="phoneNumber" class="col-sm-2 control-label"></label>
+         <div class="col-sm-8"> <hr></div>
+      </div>
+
+
+        <div class="form-group">
+         <label for="sq-card-number" class="col-sm-2 control-label"> Credit Card</label>
+         <div id="sq-card-number" class="col-sm-8"> </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sq-cvv" class="col-sm-2 control-label">CVV</label>
+         <div id="sq-cvv" class="col-sm-8">
+         </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sq-expiration-date" class="col-sm-2 control-label">Expiration Date</label>
+         <div id="sq-expiration-date" class="col-sm-8">
+         </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sq-postal-code" class="col-sm-2 control-label">Postal Code</label>
+         <div id="sq-postal-code" class="col-sm-8">
+         </div>
+        </div>
+        <input type="hidden" id="card-nonce" name="nonce">
+
+        <div class="form-group">
+          <div class="col-sm-offset-5 ">
+            <input type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit">
+            <!-- <button type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit" class="btn btn-default">Submit</button> -->
+        </div>
+      </div>
+      </form>
+
+      <div id="errors">
+      </div>
+
+      <script>
+
+        var mealsList = document.getElementById(\'mealsList\');
+          mealsList.addEventListener(\'change\', event =>{
+            event.preventDefault();
+            mealsList = document.querySelector(\'#mealsList\');
+            var totalCostDiv = document.querySelector(\'input[name="cost"]\');
+            var meal = mealsList.options[mealsList.selectedIndex].text
+            console.log(meal)
+            var priceStr = meal.substring(meal.length - 4);
+            totalCostDiv.value = \'$\' + (parseFloat(priceStr) + 2);
+        });
+
+      function tag(name, attrs, contents) {
+        const element = document.createElement(name)
+        for (const name in attrs) {
+          element.setAttribute(name, attrs[name])
+        }
+
+        // If contents is a single string or HTMLElement, make it an array of one
+        // element; this guarantees that contents is an array below.
+        if (!(contents instanceof Array)) {
+          contents = [contents]
+        }
+
+        contents.forEach(piece => {
+          if (piece instanceof HTMLElement) {
+            element.appendChild(piece)
+          } else {
+            // must create a text node for a raw string
+            element.appendChild(document.createTextNode(piece))
+          }
+      })
+        return element
+      }
+      </script>
+        <script type="text/javascript" src="static/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript" src="static/bootstrap.min.js"></script>
+    </body>
+    </html>"""
+    f = open("static/index.html", "w")
+    f.write(index)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
