@@ -127,8 +127,18 @@ def CreatePool():
     json = request.get_json()
     db = get_db()
     init_db()
+    print json
     insert("Pools", ("restaurant", "return_time", "num_orders", "pickup_location", "has_arrived"), (json["restaurant"], json["return_time"], json["num_orders"], json["pickup_location"], False))
     return jsonify(**{"order_link": "https://foodpool.mybluemix.net/"})
+
+@app.route('/GetConfirmedOrders')
+def GetConfirmedOrders():
+    res = query_db("Select * from Orders")
+    res = [{"name": row[0], "food_order": row[1], "total": row[2], "phone": row[3]} for row in res]
+    res = {"orders": res}
+    print res
+    return jsonify(**res)
+
 
 @app.route('/PoolArrived', methods = ['POST'])
 def PoolArrived():
