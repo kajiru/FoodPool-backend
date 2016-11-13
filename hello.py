@@ -319,6 +319,7 @@ def create_index():
     }
     .lead{
       text-align: center;
+      color:#FC6000;
     }
 
       </style>
@@ -399,19 +400,18 @@ def create_index():
         <input type="hidden" id="card-nonce" name="nonce">
 
         <div class="form-group">
-          <div class="col-sm-offset-5 ">
+          <div class="col-sm-offset-2">
             <input type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit">
             <!-- <button type="submit" onclick="submitButtonClick(event)" id="card-nonce-submit" class="btn btn-default">Submit</button> -->
         </div>
       </div>
       </form>
 
-      <nav class="navbar navbar-default navbar-fixed-bottom centered">
-          <div class="container">
-              <div class="lead" text-align="center" >Powered By</div>
-              <img src="static/images/pay_by_square.png" class="img-responsive centered" alt="Powered By Square" style="width:180px;height:90x;">
-          </div>
-      </nav>
+
+
+       <img src="static/images/pay_by_square.png" class="img-responsive centered" alt="Powered By Square" style="width:120px;height:60px;">
+
+
 
       <div id="errors">
       </div>
