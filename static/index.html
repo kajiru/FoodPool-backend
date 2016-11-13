@@ -76,6 +76,10 @@
       sqPaymentForm.requestCardNonce();
     }
 
+
+    //alert(restaurantMenu.options[restaurantMenu.selectedIndex ].value);
+
+
     function validateUserInfo(){
       //TODO: Actually check various constrains
       var name = document.querySelector('input[name="name"]').value;
@@ -114,11 +118,27 @@
     <label>Name </label><br>
     <input type="text" name="username">
     <br>
-    <label>Order </label><br>
-    <input type="text" name="order">
+    <label>Select Restraunt</label>
     <br>
+    <select id ="restaurantName" onchange="updateMenus(this)">
+      <option value="chipotle">Chipotle</option>
+      <option value="in-n-out">In-N-Out</option>
+      <option value="panda-express">Panda Express</option>
+      <option value="great-chinese">Great Chine</option>
+      <option value="thai-Basil-Cuisine">Thai Basil Cuisine</option>
+    </select>
+    <br>
+    <div id = "meals">
+      <label>Select Meal</label>
+      <br>
+      <select id="mealsList" name="mealChoise">
+        <option value="7.15" >Chiecken Burrito Bowl - $7.15</option>
+        <option value="8.25">Steak Burrito Bowl - $8.25</option>
+        <option value="7.15"> Veggie Burrito - $7.15</option>
+      </select>
+    </div>
     <label>Total Cost</label><br>
-    <input type="text" name="cost">
+    <input type="text" name="cost" value="$9.15">
     <br>
     <label>Phone number </label><br>
     <input type="text" name="phoneNumber">
@@ -138,5 +158,98 @@
 
   <div id="errors">
   </div>
+
+  <script>
+
+  function updateMenus(el){
+    var restaurants = [
+      [{meal:'Chicken Burrito Bowl - Chicken',price: 7.15},{meal:'Steak Burrito Bowl',price: 8.25},{meal:'Veggie Burrito ',price: 7.15}],
+      [{meal:'Humburger w/Onion',price:5.25},{meal:'Cheeseburger w/Onion',price:5.55},{meal:'Double-Double w/Onion',price:6.60}]
+    ];
+
+    var mealsDiv = document.getElementById('meals');
+    var value = el.options[el.selectedIndex].value;
+    if(value === 'chipotle'){
+      var chipotleMenu = restaurants[0];
+
+      document.querySelector('input[name="cost"]').value = '$' + (parseFloat(chipotleMenu[0]['price']) + 2.0);
+      var chipotleMenuArr = [];
+      for(var i = 0; i < chipotleMenu.length; i++){
+        chipotleMenuArr.push(tag('option', {'value':chipotleMenu[i]['price']},chipotleMenu[i]['meal'] + ' - $' + chipotleMenu[i]['price']));
+      }
+      meals.innerHTML = '';
+      meals.appendChild(tag('label',{},'Select Meal'));
+      meals.appendChild(tag('br',{},''));
+      mealsDiv.appendChild(tag('select',{'id':'mealsList'},chipotleMenuArr));
+
+      //Reattaches the event listener
+      var mealsList = document.getElementById('mealsList');
+      mealsList.addEventListener('change', event =>{
+        event.preventDefault();
+        mealsList = document.querySelector('#mealsList');
+        var totalCostDiv = document.querySelector('input[name="cost"]');
+        console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
+        totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
+      });
+
+    }else{
+      var othersMenu = restaurants[1];
+      document.querySelector('input[name="cost"]').value = '$' + (parseFloat(othersMenu[0]['price']) +2.0);
+      var othersMenuArr = [];
+      for(var i = 0; i < othersMenu.length; i++){
+        othersMenuArr.push(tag('option', {'value':othersMenu[i]['price']},othersMenu[i]['meal'] + ' - $' + othersMenu[i]['price']));
+      }
+      meals.innerHTML = '';
+      meals.appendChild(tag('label',{},'Select Meal'));
+      meals.appendChild(tag('br',{},''));
+      mealsDiv.appendChild(tag('select',{'id':'mealsList'},othersMenuArr));
+
+      //Reattaches the event listener
+      var mealsList = document.getElementById('mealsList');
+      mealsList.addEventListener('change', event =>{
+        event.preventDefault();
+        mealsList = document.querySelector('#mealsList');
+        var totalCostDiv = document.querySelector('input[name="cost"]');
+        console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
+        totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
+      });
+    }
+
+  }
+
+    var mealsList = document.getElementById('mealsList');
+    mealsList.addEventListener('change', event =>{
+      event.preventDefault();
+      mealsList = document.querySelector('#mealsList');
+      var totalCostDiv = document.querySelector('input[name="cost"]');
+      console.log((parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2));
+      totalCostDiv.value = '$' + (parseFloat(mealsList.options[mealsList.selectedIndex].value) + 2);
+
+    });
+
+
+  function tag(name, attrs, contents) {
+    const element = document.createElement(name)
+    for (const name in attrs) {
+      element.setAttribute(name, attrs[name])
+    }
+
+    // If contents is a single string or HTMLElement, make it an array of one
+    // element; this guarantees that contents is an array below.
+    if (!(contents instanceof Array)) {
+      contents = [contents]
+    }
+
+    contents.forEach(piece => {
+      if (piece instanceof HTMLElement) {
+        element.appendChild(piece)
+      } else {
+        // must create a text node for a raw string
+        element.appendChild(document.createTextNode(piece))
+      }
+  })
+    return element
+  }
+  </script>
 </body>
 </html>

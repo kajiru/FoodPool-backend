@@ -64,8 +64,8 @@ def processOrder():
     if request.method == 'POST':
         nonce = request.form['nonce']
         name  = request.form['username']
-        order  = request.form['order']
-        cost  = int(request.form['cost'])
+        order  = request.form['mealChoise']
+        cost  = int(float(request.form['cost'][1:]) * 100)
         phoneNumber  = request.form['phoneNumber']
         userDetails = {'name':name, 'order':order, 'cost':cost, 'phoneNumber':phoneNumber}
 
@@ -81,7 +81,7 @@ def processOrder():
         else:
             return app.send_static_file('index.html')
 def processTransaction(nonce,cost):
-        
+
     api_instance = TransactionApi()
     # Every payment you process with the SDK must have a unique idempotency key.
     # If you're unsure whether a particular payment succeeded, you can reattempt
@@ -137,7 +137,7 @@ def PoolArrived():
     for order in orders:
         to = order[0]
         try:
-            result = rapid.call('Twilio', 'sendSms', { 
+            result = rapid.call('Twilio', 'sendSms', {
                 'accountSid': 'ACaf68211f718a1a979fe9666f2ba4e016',
                 'accountToken': 'fbb7e37935978d397ba905b2ded0e08a',
                 'from': '(415) 802-0448',
