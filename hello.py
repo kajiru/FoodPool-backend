@@ -173,11 +173,15 @@ def create_index():
       <option value="Hamburger with Onion" > Hamburger with Onion - $5.25</option>
       <option value="Cheeseburger with Onion"> Cheeseburger with Onion - $5.55</option>
       <option value="Double-Double with Onion"> Double-Double with Onion - $6.60</option>
+      <option value="French Fries"> French Fries - $2.50</option>
+      <option value="Vanilla Shake"> Vanilla Shake - $3.00</option>
+      <option value="Strawberry Shake"> Strawberry Shake - $3.00</option>
     """,
     "Chipotle": """
       <option value="Chicken Burrito Bowl" > Chicken Burrito Bowl - $7.15</option>
       <option value="Steak Burrito Bowl"> Steak Burrito Bowl - $8.25</option>
       <option value="Veggie Burrito "> Veggie Burrito - $7.15</option>
+      <option value="Corn Chips"> Corn Chips - $3.25</option>
     """}
     meal = ""
     try:
