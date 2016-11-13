@@ -110,83 +110,103 @@
     }
 
     .text-left {
-  text-align: left;
-}
+      text-align: left;
+    }
 
-.text-right {
-  text-align: right;
-}
+    .text-right {
+      text-align: right;
+    }
 
-.text-center {
-  text-align: center;
-}
+    .text-center {
+      text-align: center;
+    }
 
+    .centered{
+      display: block;
+      margin-left: auto;
+      margin-right: auto
+    }
+    .lead{
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <span class="lead">foodPool</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
   <h1 class="text-center">Place Your Order</h1>
 
-  <form class="form-horizontal" id="form" novalidate action="/processOrder" method="post">
+  <form class="form-horizontal centered" id="form" novalidate action="/processOrder" method="post">
 
     <div class="form-group">
-      <label for="name" class="col-sm-2 control-label">Name</label>
-     <div class="col-sm-8">
+      <label for="name" class="col-xs-2 control-label">Name</label>
+     <div class="col-xs-6">
           <input type="text" class="form-control" id="name" name="username" placeholder="Name">
      </div>
   </div>
 
     <div class="form-group">
-      <label for="meals" class="col-sm-2 control-label">Meal</label>
-      <div class="col-sm-8">
+      <label for="meals" class="col-xs-2 control-label">Meal</label>
+      <div class="col-xs-6">
         <select id="mealsList" name="meal">
-          <option value="Chicken Burrito Bowl" > Chiecken Burrito Bowl - $7.15</option>
+          <option value="Chicken Burrito Bowl" > Chicken Burrito Bowl - $7.15</option>
           <option value="Steak Burrito Bowl"> Steak Burrito Bowl - $8.25</option>
           <option value="Veggie Burrito "> Veggie Burrito - $7.15</option>
+          <option value="Crispy Corn Tacos "> Crispy Corn Tacos - $8.15</option>
+          <option value="Soft Flour Tacos "> Soft Flour Tacos - $7.15</option>
         </select>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="cost" class="col-sm-2 control-label">Total Cost</label>
-     <div class="col-sm-8">
+      <label for="cost" class="col-xs-2 control-label">Total Cost</label>
+     <div class="col-xs-6">
           <input type="text" class="form-control" id="cost" name="cost" placeholder="$0.00" value="$9.15">
      </div>
   </div>
 
     <div class="form-group">
-      <label for="phoneNumber" class="col-sm-2 control-label">Phone Number</label>
-     <div class="col-sm-8">
+      <label for="phoneNumber" class="col-xs-2 control-label">Phone Number</label>
+     <div class="col-xs-6">
           <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="650 000 0000">
      </div>
    </div>
 
    <div class="form-group">
-     <label for="phoneNumber" class="col-sm-2 control-label"></label>
-     <div class="col-sm-8"> <hr></div>
+     <label for="phoneNumber" class="col-xs-2 control-label"></label>
+     <div class="col-xs-6"> <hr></div>
   </div>
 
 
     <div class="form-group">
-     <label for="sq-card-number" class="col-sm-2 control-label"> Credit Card</label>
-     <div id="sq-card-number" class="col-sm-8"> </div>
+     <label for="sq-card-number" class="col-xs-2 control-label"> Credit Card</label>
+     <div id="sq-card-number" class="col-xs-6"> </div>
     </div>
 
     <div class="form-group">
-      <label for="sq-cvv" class="col-sm-2 control-label">CVV</label>
-     <div id="sq-cvv" class="col-sm-8">
+      <label for="sq-cvv" class="col-xs-2 control-label">CVV</label>
+     <div id="sq-cvv" class="col-xs-6">
      </div>
     </div>
 
     <div class="form-group">
-      <label for="sq-expiration-date" class="col-sm-2 control-label">Expiration Date</label>
-     <div id="sq-expiration-date" class="col-sm-8">
+      <label for="sq-expiration-date" class="col-xs-2 control-label">Expiration Date</label>
+     <div id="sq-expiration-date" class="col-xs-6">
      </div>
     </div>
 
     <div class="form-group">
-      <label for="sq-postal-code" class="col-sm-2 control-label">Postal Code</label>
-     <div id="sq-postal-code" class="col-sm-8">
+      <label for="sq-postal-code" class="col-xs-2 control-label">Postal Code</label>
+     <div id="sq-postal-code" class="col-xs-6">
      </div>
     </div>
     <input type="hidden" id="card-nonce" name="nonce">
@@ -201,6 +221,13 @@
 
   <div id="errors">
   </div>
+
+  <nav class="navbar navbar-default navbar-fixed-bottom centered">
+    <div class="container">
+        <div class="lead" text-align="center" >Powered By</div>
+        <img src="static/images/pay_by_square.png" class="img-responsive centered" alt="Powered By Square" style="width:180px;height:90x;">
+    </div>
+</nav>
 
   <script>
 
